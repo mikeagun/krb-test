@@ -1,0 +1,5 @@
+#see https://web.mit.edu/kerberos/krb5-devel/doc/admin/conf_files/kadm5_acl.html
+*/admin@KRB-TEST     *
+#I don't think we need the below since I think i (might) be default
+#*/*@KRB-TEST         i
+#*@KRB-TEST           i

@@ -1,0 +1,50 @@
+version: "2"
+services:
+  kdc:
+    hostname: 'kdc.krb-test'
+    build: kdc-test
+    #entrypoint: 'tail -f /dev/null'
+    entrypoint: '/init.sh'
+    volumes:
+      # This is needed otherwise there likely won't be enough entropy to generate a new kerberos realm (FIXME for production)
+      - /dev/urandom:/dev/random
+      - ./krb5.conf:/etc/krb5.conf:r
+      - ./kadm5.acl:/var/lib/krb5kdc/kadm5.acl:r
+      - ./kdc.conf:/var/lib/krb5kdc/kdc.conf:r
+      - ./kdc-var-log/:/var/log/
+      - ./kdc-ash-history:/root/.ash_history
+      - ./kdc-init.sh:/init.sh
+    ports:
+      - "749:749"
+      - "88:88/udp"
+  client:
+    hostname: 'client.krb-test'
+    build: krb-client
+    entrypoint: 'tail -f /dev/null'
+    volumes:
+      - ./krb5.conf:/etc/krb5.conf:r
+      - ./client-ash-history:/root/.ash_history
+  ssh-server:
+    hostname: 'ssh-server.krb-test'
+    build: ssh-server
+    #entrypoint: 'tail -f /dev/null'
+    entrypoint: '/init.sh'
+    volumes:
+      - ./krb5.conf:/etc/krb5.conf:r
+      - ./ssh-server-ash-history:/root/.ash_history
+      - ./ssh-server-init.sh:/init.sh
+    #ports:
+    #  - "2222:22"
+  ssh-client:
+    hostname: 'ssh-client.krb-test'
+    build: ssh-client
+    entrypoint: 'tail -f /dev/null'
+    #entrypoint: /bin/sh 
+    #stdin_open: true # docker run -i
+    #tty: true        # docker run -t
+    volumes:
+      - ./krb5.conf:/etc/krb5.conf:r
+      - ./ssh-client-ash-history:/root/.ash_history
+networks:
+  default:
+    name: krb-test

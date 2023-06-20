@@ -1,0 +1,12 @@
+#kdc log files
+kdc-var-log
+
+#ash history files
+kdc-ash-history
+client-ash-history
+ssh-server-ash-history
+ssh-client-ash-history
+
+#keyfiles
+sshserver.keytab
+sshuser.keytab

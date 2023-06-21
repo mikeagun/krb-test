@@ -49,15 +49,17 @@ sudo docker compose up -d
 
 You can test basic kerberos auth using the client container
 ```
-sudo docker exec -ti krb-test-ssh-server-1 /bin/sh
+sudo docker exec -ti krb-test-client-1 /bin/sh
 #from client:
-kinit admin/admin@KRB-TEST
+kinit admin/admin
 kadmin
 #try listprincs in kadmin to list principles
+exit #from kadmin
+exit #from sh
 ```
 
 
-Copy the keys the init scripts created to the ssh containers
+From the docker host, copy the keys kdc-init.sh created
 ```
 sudo docker cp krb-test-kdc-1:/sshserver.keytab ./sshserver.keytab
 sudo docker cp krb-test-kdc-1:/sshuser.keytab ./sshuser.keytab

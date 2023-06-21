@@ -16,7 +16,19 @@ compose script:
 Passwords:
 - master key password: none
 - kerberos passwords: pass
-- local user account passwords: password
+- ssh-server local user account passwords: password
+
+Kerberos principles created:
+- these are in addition to the default ones created by default
+- all created in KRB-TEST realm
+- **admin/admin** - kerberos admin user
+  - password is "pass"
+- **host/ssh-server.krb-test** - ssh server kerberos key
+  - kdc init script creates key at `krb-test-kdc-1:/sshserver.keytab`
+- **sshuser** - ssh user for testing key file auth (also has local account on ssh-server)
+  - kdc init script creates key at `krb-test-kdc-1:/sshuser.keytab`
+- **sshuserpass** - ssh user for testing password auth (also has local account on ssh-server)
+  - principle password is "pass"
 
 File Paths:
 - /etc/krb5.conf - main kerberos conf
@@ -41,6 +53,7 @@ sudo docker exec -ti krb-test-ssh-server-1 /bin/sh
 #from client:
 kinit admin/admin@KRB-TEST
 kadmin
+#try listprincs in kadmin to list principles
 ```
 
 

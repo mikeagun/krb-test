@@ -6,7 +6,7 @@ services:
     #entrypoint: 'tail -f /dev/null'
     entrypoint: '/init.sh'
     volumes:
-      # This is needed otherwise there likely won't be enough entropy to generate a new kerberos realm (FIXME for production)
+      # speeds up testing, otherwise there probably won't be enough entropy for key generation
       - /dev/urandom:/dev/random
       - ./krb5.conf:/etc/krb5.conf:r
       - ./kadm5.acl:/var/lib/krb5kdc/kadm5.acl:r

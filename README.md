@@ -3,10 +3,10 @@
 ## Notes
 
 Containers:
-- krb-test-kdc-1 - Kerberos KDC
-- krb-test-client-1 - Kerberos client (for testing e.g. kinit/kadmin)
-- krb-test-ssh-server-1 - SSH server using kerberos for auth
-- krb-test-ssh-client-1 - SSH client for testing against server
+- kdc - Kerberos KDC
+- client - Kerberos client (for testing e.g. kinit/kadmin)
+- ssh-server - SSH server using kerberos for auth
+- ssh-client - SSH client for testing against server
 
 compose script:
 - there are some commented out lines for mounting kdc logs and shell histories into the current directory
@@ -49,7 +49,7 @@ sudo docker compose up -d
 
 You can test basic kerberos auth using the client container
 ```
-sudo docker exec -ti krb-test-client-1 /bin/sh
+sudo docker compose exec -ti client /bin/sh
 #from client:
 kinit admin/admin
 kadmin
@@ -70,7 +70,7 @@ sudo docker cp sshuser.keytab krb-test-ssh-client-1:/etc/krb5.keytab
 After the ssh-server has its key, we can start sshd
 
 ```bash
-sudo docker exec -ti krb-test-ssh-server-1 /bin/sh
+sudo docker compose exec -ti ssh-server /bin/sh
 #from ssh-server:
 /usr/sbin/sshd.krb5
 exit
@@ -79,7 +79,7 @@ exit
 Now we can test ssh to the ssh server (both using keyfiles and passwords)
 
 ```bash
-sudo docker exec -ti krb-test-ssh-client-1 /bin/sh
+sudo docker compose exec -ti ssh-client /bin/sh
 
 #from ssh-client:
 kinit sshuser -k

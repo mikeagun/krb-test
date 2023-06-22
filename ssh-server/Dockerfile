@@ -14,6 +14,9 @@ RUN \
 COPY --chown=root:root --chmod=444 krb5.conf /etc/krb5.conf
 COPY --chown=root:root --chmod=500 ssh-server/init.sh /init.sh
 COPY --chown=root:root --chmod=400 ssh-server/sshd_config /etc/ssh/sshd_config
+COPY --chown=root:root --chmod=500 ssh-server/healthcheck.sh /healthcheck.sh
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=3s --retries=2 CMD ["/healthcheck.sh"]
 
 EXPOSE 22
 

@@ -13,7 +13,7 @@ RUN \
 #we build from parent directory (to share global confs), so paths are relative to that
 COPY --chown=root:root --chmod=444 krb5.conf /etc/krb5.conf
 COPY --chown=root:root --chmod=400 sshd/sshd_config /etc/ssh/sshd_config
-COPY --chown=root:root --chmod=500 sshd/init.sh /init.sh
+COPY --chown=root:root --chmod=500 sshd/entrypoint.sh /entrypoint.sh
 COPY --chown=root:root --chmod=500 sshd/healthcheck.sh /healthcheck.sh
 
 #setup steps:
@@ -31,7 +31,7 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=3s --retries=2 CMD ["/hea
 
 EXPOSE 22
 
-ENTRYPOINT ["/init.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 #ENTRYPOINT ["sshd.krb5","-D"]
 #ENTRYPOINT ["/usr/sbin/sshd","-D"]
 

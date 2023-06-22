@@ -37,17 +37,22 @@ File Paths:
 
 ## Initialization Procedure
 
-The setup is now fully automated, but you do need to make sure imags get built in the right order.
+Startup is now fully automated, but you do need to make sure imags get built in the right order.
+- we generate the KDC and principle keys at build time, so need to (re)build kdc before sshd/ssh-client which copy those keys
+- this is BAD practive for production use (mount/copy the keys into containers at run time instead),
+but convenient to make `docker compose up` fully automatic
 
 Steps:
 - First make sure the kdc is built and up-to-date, since we have the other Dockerfiles copy the keytabs from the kdc image.
 - Next build the rest of the images
-  - may need to build individual containers with --no-cache in the second step if the Dockerfile keeps stale keytabs from the image cache
+  - need to build images which pull keytabs from kdc with --no-cache after kdc rebuild to ensure we don't use stale keytab from image cache
 - Finally start the cluster
 
 ```bash
 sudo docker compose build kdc
 sudo docker compose build
+#need to bypass image cache after kdc rebuilds (since kdc key will be new)
+#sudo docker compose build --no-cache sshd ssh-client
 sudo docker compose up -d
 ```
 
@@ -62,7 +67,7 @@ exit #from kadmin
 exit #from sh
 ```
 
-Now we can test ssh to the ssh server (both using keyfiles and passwords)
+ssh-client can be used to test kerberos auth for ssh (both using keytabs and passwords)
 
 ```bash
 sudo docker compose exec -ti ssh-client /bin/sh

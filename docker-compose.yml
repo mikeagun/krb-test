@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: ./kdc/Dockerfile
-    #entrypoint: 'sleep infinity'
+      #entrypoint: sh -c 'trap exit INT TERM; while :; do sleep 300; done'
     volumes:
       # speeds up testing, otherwise there probably won't be enough entropy for key generation
       - /dev/urandom:/dev/random
@@ -25,7 +25,7 @@ services:
     build:
       context: .
       dockerfile: ./client/Dockerfile
-    entrypoint: 'sleep infinity'
+    entrypoint: sh -c 'trap exit INT TERM; while :; do sleep 300; done'
     depends_on:
       - kdc
     #volumes:
@@ -37,7 +37,7 @@ services:
     build:
       context: .
       dockerfile: ./sshd/Dockerfile
-    #entrypoint: 'sleep infinity'
+    entrypoint: sh -c 'trap exit INT TERM; while :; do sleep 300; done'
     depends_on:
       - kdc
     #volumes:
@@ -51,7 +51,7 @@ services:
     build:
       context: .
       dockerfile: ./ssh-client/Dockerfile
-    entrypoint: 'sleep infinity'
+    entrypoint: sh -c 'trap exit INT TERM; while :; do sleep 300; done'
     depends_on:
       - kdc
     #entrypoint: /bin/sh 
@@ -66,7 +66,7 @@ services:
     build:
       context: .
       dockerfile: ./ldap/Dockerfile
-    entrypoint: 'sleep infinity'
+    entrypoint: sh -c 'trap exit INT TERM; while :; do sleep 300; done'
     depends_on:
       - kdc
     volumes:

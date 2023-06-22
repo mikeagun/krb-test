@@ -15,12 +15,11 @@ RUN \
 COPY --chown=root:root --chmod=444 krb5.conf /etc/krb5.conf
 COPY --chown=root:root --chmod=400 kdc/kdc.conf /var/lib/krb5kdc/kdc.conf
 COPY --chown=root:root --chmod=400 kdc/kadm5.acl /var/lib/krb5kdc/kadm5.acl
-COPY --chown=root:root --chmod=500 kdc/init.sh /init.sh
-COPY --chown=root:root --chmod=500 kdc/healthcheck.sh /healthcheck.sh
 
 #setup steps:
 #  - create realm with empty master key password
 #  - create principles and keytabs
+#  - we do this as soon as we have the configs copied to minimize key regen (and avoid rebuilding sshd/ssh-client)
 RUN \
   echo -e '\n' | kdb5_util create -r KRB-TEST -s \
   && kadmin.local -q "addprinc -pw pass admin/admin" \
@@ -32,9 +31,12 @@ RUN \
   && kadmin.local -q "ktadd -k /sshuser.keytab sshuser" \
   && kadmin.local -q "addprinc -pw pass sshuserpass"
 
+COPY --chown=root:root --chmod=500 kdc/entrypoint.sh /entrypoint.sh
+COPY --chown=root:root --chmod=500 kdc/healthcheck.sh /healthcheck.sh
+
 HEALTHCHECK --interval=30s --timeout=3s --start-period=3s --retries=2 CMD ["/healthcheck.sh"]
 
 EXPOSE 749 88/udp
 
-ENTRYPOINT ["/init.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 #CMD ["/bin/sh"]

@@ -7,7 +7,6 @@ services:
       context: .
       dockerfile: ./kdc/Dockerfile
     #entrypoint: 'sleep infinity'
-    entrypoint: '/init.sh'
     volumes:
       # speeds up testing, otherwise there probably won't be enough entropy for key generation
       - /dev/urandom:/dev/random
@@ -27,21 +26,23 @@ services:
       context: .
       dockerfile: ./client/Dockerfile
     entrypoint: 'sleep infinity'
+    depends_on:
+      - kdc
     #volumes:
       #- ./krb5.conf:/etc/krb5.conf:r
       #- ./client-ash-history:/root/.ash_history
-  ssh-server:
-    hostname: 'ssh-server.krb-test'
-    container_name: 'krb-test-ssh-server'
+  sshd:
+    hostname: 'sshd.krb-test'
+    container_name: 'krb-test-sshd'
     build:
       context: .
-      dockerfile: ./ssh-server/Dockerfile
+      dockerfile: ./sshd/Dockerfile
     #entrypoint: 'sleep infinity'
-    entrypoint: '/init.sh'
+    depends_on:
+      - kdc
     #volumes:
       #- ./krb5.conf:/etc/krb5.conf:r
-      #- ./ssh-server-init.sh:/init.sh
-      #- ./ssh-server-ash-history:/root/.ash_history
+      #- ./sshd-ash-history:/root/.ash_history
     #ports:
     #  - "2222:22"
   ssh-client:
@@ -51,6 +52,8 @@ services:
       context: .
       dockerfile: ./ssh-client/Dockerfile
     entrypoint: 'sleep infinity'
+    depends_on:
+      - kdc
     #entrypoint: /bin/sh 
     #stdin_open: true # docker run -i
     #tty: true        # docker run -t
@@ -64,6 +67,8 @@ services:
       context: .
       dockerfile: ./ldap/Dockerfile
     entrypoint: 'sleep infinity'
+    depends_on:
+      - kdc
     volumes:
       #- ./krb5.conf:/etc/krb5.conf:r
       - ./ldap-ash-history:/root/.ash_history

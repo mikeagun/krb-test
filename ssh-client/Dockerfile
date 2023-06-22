@@ -16,3 +16,5 @@ COPY --chown=root:root --chmod=400 ssh-client/ssh_config /etc/ssh/ssh_config
 
 #ENTRYPOINT ["start.sh"]
 #CMD ["/bin/sh"]
+
+COPY --from=krb-test-kdc:latest /sshuser.keytab /etc/krb5.keytab

@@ -1,16 +1,18 @@
 FROM alpine:3.18.2
 MAINTAINER Michael Agun <mikeagun@gmail.com>
 
-#image for running kerberos kdc and admin server
+#ssh client for testing kerberos auth
+
+# BUILD FROM PARENT DIRECTORY
+# build command: $ sudo docker build -t krb-test-ssh-client:latest -f ssh-client/Dockerfile .
 
 RUN \
   apk add --no-cache krb5 openssh-client-krb5 #install ssh and kerberos client tools
 
-COPY ssh_config /etc/ssh/ssh_config 
+#we build from parent directory (to share global confs), so paths are relative to that
+COPY --chown=root:root --chmod=444 krb5.conf /etc/krb5.conf
+COPY --chown=root:root --chmod=400 ssh-client/ssh_config /etc/ssh/ssh_config
 
-
-#COPY resources/start.sh /usr/local/bin/start.sh
-#COPY resources/known_hosts /root/.ssh/known_hosts
 
 #ENTRYPOINT ["start.sh"]
 #CMD ["/bin/sh"]

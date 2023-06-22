@@ -1,50 +1,75 @@
-version: "2"
+version: "3.8"
 services:
   kdc:
     hostname: 'kdc.krb-test'
-    build: kdc-test
-    #entrypoint: 'tail -f /dev/null'
+    container_name: 'krb-test-kdc'
+    build:
+      context: .
+      dockerfile: ./kdc/Dockerfile
+    #entrypoint: 'sleep infinity'
     entrypoint: '/init.sh'
     volumes:
       # speeds up testing, otherwise there probably won't be enough entropy for key generation
       - /dev/urandom:/dev/random
-      - ./krb5.conf:/etc/krb5.conf:r
-      - ./kadm5.acl:/var/lib/krb5kdc/kadm5.acl:r
-      - ./kdc.conf:/var/lib/krb5kdc/kdc.conf:r
-      - ./kdc-init.sh:/init.sh
+      #- ./krb5.conf:/etc/krb5.conf:r
+      #- ./kdc/kadm5.acl:/var/lib/krb5kdc/kadm5.acl:r
+      #- ./kdc/kdc.conf:/var/lib/krb5kdc/kdc.conf:r
+      #- ./kdc/init.sh:/init.sh
       #- ./kdc-var-log/:/var/log/
       #- ./kdc-ash-history:/root/.ash_history
-    ports:
-      - "749:749"
-      - "88:88/udp"
+    #ports:
+    #  - "749:749"
+    #  - "88:88/udp"
   client:
     hostname: 'client.krb-test'
-    build: krb-client
-    entrypoint: 'tail -f /dev/null'
-    volumes:
-      - ./krb5.conf:/etc/krb5.conf:r
+    container_name: 'krb-test-client'
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    entrypoint: 'sleep infinity'
+    #volumes:
+      #- ./krb5.conf:/etc/krb5.conf:r
       #- ./client-ash-history:/root/.ash_history
   ssh-server:
     hostname: 'ssh-server.krb-test'
-    build: ssh-server
-    #entrypoint: 'tail -f /dev/null'
+    container_name: 'krb-test-ssh-server'
+    build:
+      context: .
+      dockerfile: ./ssh-server/Dockerfile
+    #entrypoint: 'sleep infinity'
     entrypoint: '/init.sh'
-    volumes:
-      - ./krb5.conf:/etc/krb5.conf:r
-      - ./ssh-server-init.sh:/init.sh
+    #volumes:
+      #- ./krb5.conf:/etc/krb5.conf:r
+      #- ./ssh-server-init.sh:/init.sh
       #- ./ssh-server-ash-history:/root/.ash_history
     #ports:
     #  - "2222:22"
   ssh-client:
     hostname: 'ssh-client.krb-test'
-    build: ssh-client
-    entrypoint: 'tail -f /dev/null'
+    container_name: 'krb-test-ssh-client'
+    build:
+      context: .
+      dockerfile: ./ssh-client/Dockerfile
+    entrypoint: 'sleep infinity'
     #entrypoint: /bin/sh 
     #stdin_open: true # docker run -i
     #tty: true        # docker run -t
-    volumes:
-      - ./krb5.conf:/etc/krb5.conf:r
+    #volumes:
+      #- ./krb5.conf:/etc/krb5.conf:r
       #- ./ssh-client-ash-history:/root/.ash_history
+  ldap:
+    hostname: 'ldap.krb-test'
+    container_name: 'krb-test-ldap'
+    build:
+      context: .
+      dockerfile: ./ldap/Dockerfile
+    entrypoint: 'sleep infinity'
+    volumes:
+      #- ./krb5.conf:/etc/krb5.conf:r
+      - ./ldap-ash-history:/root/.ash_history
+    #ports:
+    #  - "389:389"
+    #  - "636:636"
 networks:
   default:
     name: krb-test

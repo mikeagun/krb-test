@@ -9,4 +9,8 @@ kdc-var-log
 
 #defaults copied out from docker
 *_default
-*/*_default
+*/_default
+
+.git
+docker-compose.yml
+README.md

@@ -23,10 +23,11 @@ Kerberos principles created:
 - all created in KRB-TEST realm
 - **admin/admin** - kerberos admin user
   - password is "pass"
+- **healthcheck** - used in docker healthcheck to verify kdc is working
 - **host/ssh-server.krb-test** - ssh server kerberos key
-  - kdc init script creates key at `krb-test-kdc-1:/sshserver.keytab`
+  - kdc init script creates key at `krb-test-kdc:/sshserver.keytab`
 - **sshuser** - ssh user for testing key file auth (also has local account on ssh-server)
-  - kdc init script creates key at `krb-test-kdc-1:/sshuser.keytab`
+  - kdc init script creates key at `krb-test-kdc:/sshuser.keytab`
 - **sshuserpass** - ssh user for testing password auth (also has local account on ssh-server)
   - principle password is "pass"
 
@@ -43,7 +44,7 @@ For now there are a couple manual steps to get the kerberos key files the right 
 first start up the containers, and pregenerate some users and keys
 
 ```bash
-sudo docker compose up -d
+sudo docker compose up -d --build
 ```
 
 
@@ -61,10 +62,10 @@ exit #from sh
 
 From the docker host, copy the keys kdc-init.sh created
 ```
-sudo docker cp krb-test-kdc-1:/sshserver.keytab ./sshserver.keytab
-sudo docker cp krb-test-kdc-1:/sshuser.keytab ./sshuser.keytab
-sudo docker cp sshserver.keytab krb-test-ssh-server-1:/etc/krb5.keytab
-sudo docker cp sshuser.keytab krb-test-ssh-client-1:/etc/krb5.keytab
+sudo docker compose cp kdc:/sshserver.keytab ./sshserver.keytab
+sudo docker compose cp kdc:/sshuser.keytab ./sshuser.keytab
+sudo docker compose cp sshserver.keytab ssh-server:/etc/krb5.keytab
+sudo docker compose cp sshuser.keytab ssh-client:/etc/krb5.keytab
 ```
 
 After the ssh-server has its key, we can start sshd

@@ -20,5 +20,4 @@ EOF
 #exec /usr/sbin/sshd.krb5 -D
 
 #keep container running
-#exec tail -f /dev/null
 exec sleep infinity

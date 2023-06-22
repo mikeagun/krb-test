@@ -1,15 +1,19 @@
 FROM alpine:3.18.2
 MAINTAINER Michael Agun <mikeagun@gmail.com>
 
-#image for running kerberos kdc and admin server
+#runs ssh server authenticated with kerberos
+
+# BUILD FROM PARENT DIRECTORY
+# build command: $ sudo docker build -t krb-test-ssh-server:latest -f ssh-server/Dockerfile .
 
 RUN \
   apk add --no-cache krb5 openssh-server-krb5 #install ssh server and kerberos client tools
 
-COPY sshd_config /etc/ssh/sshd_config
 
-#COPY resources/start.sh /usr/local/bin/start.sh
-#COPY resources/known_hosts /root/.ssh/known_hosts
+#we build from parent directory (to share global confs), so paths are relative to that
+COPY --chown=root:root --chmod=444 krb5.conf /etc/krb5.conf
+COPY --chown=root:root --chmod=500 ssh-server/init.sh /init.sh
+COPY --chown=root:root --chmod=400 ssh-server/sshd_config /etc/ssh/sshd_config
 
 EXPOSE 22
 

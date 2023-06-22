@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: ./kdc/Dockerfile
-      #entrypoint: sh -c 'trap exit INT TERM; while :; do sleep 300; done'
+    #entrypoint: sh -c 'trap exit INT TERM; while :; do sleep 300; done'
     volumes:
       # speeds up testing, otherwise there probably won't be enough entropy for key generation
       - /dev/urandom:/dev/random
@@ -37,7 +37,7 @@ services:
     build:
       context: .
       dockerfile: ./sshd/Dockerfile
-    entrypoint: sh -c 'trap exit INT TERM; while :; do sleep 300; done'
+    #entrypoint: sh -c 'trap exit INT TERM; while :; do sleep 300; done'
     depends_on:
       - kdc
     #volumes:

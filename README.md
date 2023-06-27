@@ -57,7 +57,7 @@ sudo docker compose up -d
 ```
 
 You can test basic kerberos auth and kadmin using the client container
-```
+```bash
 sudo docker compose exec -ti client /bin/sh
 #from client:
 kinit admin/admin

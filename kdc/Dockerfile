@@ -27,6 +27,8 @@ RUN \
   && kadmin.local -q "ktadd -k /healthcheck.keytab healthcheck" \
   && kadmin.local -q "addprinc -randkey host/sshd.krb-test" \
   && kadmin.local -q "ktadd -k /sshd.keytab host/sshd.krb-test" \
+  && kadmin.local -q "addprinc -randkey ldap/ldap.krb-test" \
+  && kadmin.local -q "ktadd -k /ldap.keytab host/ldap.krb-test" \
   && kadmin.local -q "addprinc -randkey sshuser" \
   && kadmin.local -q "ktadd -k /sshuser.keytab sshuser" \
   && kadmin.local -q "addprinc -pw pass sshuserpass"

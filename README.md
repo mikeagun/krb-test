@@ -1,5 +1,9 @@
 # Kerberos docker test cluster
 
+local kerberos cluster in docker compose for testing.
+
+Includes ssh server and client which authenticate using kerberos.
+
 ## Notes
 
 Containers:
@@ -7,6 +11,7 @@ Containers:
 - client - Kerberos client (for testing e.g. kinit/kadmin)
 - sshd - SSH server using kerberos for auth
 - ssh-client - SSH client for testing against server
+- ldap - WIP ldap server
 
 compose script:
 - there are some commented out lines for mounting kdc logs and shell histories into the current directory
